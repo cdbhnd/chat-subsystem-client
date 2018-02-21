@@ -66,13 +66,16 @@
                 });
         }
 
-        function getConversations() {
+        function getConversations(queryString) {
             var apiClient = sendXHR;
 
             if (detectNode()) {
                 apiClient = sendHTTP;
             }
             var url = config.conversations.replace('{{organizationId}}', that.__organizationId);
+            if (queryString) {
+                url+= '?' + queryString;
+            }
             return apiClient(url, 'GET', null, that.__token, that.__organizationKey)
                 .then(function (response) {
                     return {
