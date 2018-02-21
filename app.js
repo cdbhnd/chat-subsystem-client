@@ -13,6 +13,7 @@ if (typeof module !== 'undefined' && module.exports) {
     };
     var convId = null;
     var userId = null;
+    var messageId = null;
 
     chatAuthentification()
         .then(getConversations)
@@ -27,6 +28,7 @@ if (typeof module !== 'undefined' && module.exports) {
         .then(getOneConversation)
         .then(sendMessage)
         .then(getAllMessages)
+        .then(readMessage)
         .then(removeUserFromConversation)
         .then(getOneConversation)
         .then(deleteUser)
@@ -163,6 +165,7 @@ if (typeof module !== 'undefined' && module.exports) {
         print('Send Message');
         return ca.sendMessage(userId, convId, "Hello from the otherside")
             .then(function (res) {
+                messageId = res.message.id;
                 console.log(res);
             })
             .catch(function (err) {
@@ -173,6 +176,17 @@ if (typeof module !== 'undefined' && module.exports) {
     function getAllMessages() {
         print('Get All Messages');
         return ca.getMessages(userId, convId)
+            .then(function (res) {
+                console.log(res);
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }
+
+    function readMessage() {
+        print('Read Message');
+        return ca.readMessage(userId, convId, messageId)
             .then(function (res) {
                 console.log(res);
             })

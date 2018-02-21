@@ -36,6 +36,7 @@
         that.sendMessage = sendMessage;
         that.onMessage = onMessage;
         that.getMessages = getMessages;
+        that.readMessage = readMessage;
 
         ////////////////////////////////////////////////////////////////////
 
@@ -326,6 +327,30 @@
             }
             var url = config.messages.replace('{{conversationId}}', conversationId);
             return apiClient(url, 'GET', null, that.__token, that.__organizationKey)
+                .then(function (response) {
+                    return {
+                        status: 'OK',
+                        message: response
+                    };
+                })
+                .catch(function (error) {
+                    return {
+                        status: 'ERROR',
+                        message: error
+                    };
+                });
+        }
+
+        function readMessage(userId, conversationId, messageId) {
+            var apiClient = sendXHR;
+
+            if (detectNode()) {
+                apiClient = sendHTTP;
+            }
+            var url = config.messages.replace('{{conversationId}}', conversationId) + '/' + messageId + '/readers';
+            return apiClient(url, 'POST', {
+                userId: userId
+            }, that.__token, that.__organizationKey)
                 .then(function (response) {
                     return {
                         status: 'OK',
