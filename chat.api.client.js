@@ -369,11 +369,12 @@
         }
 
         function onMessage(userId, conversationId, callback) {
-            if (detectNode()) {
-                return onMessagePolling(userId, conversationId, callback);
-            } else {
-                return onMesageSocket(userId, conversationId, callback);
-            }
+            return onMessagePolling(userId, conversationId, callback);
+            // if (detectNode()) {
+            //     return onMessagePolling(userId, conversationId, callback);
+            // } else {
+            //     return onMesageSocket(userId, conversationId, callback);
+            // }
         }
 
         function onMessagePolling(userId, conversationId, callback) {
@@ -395,7 +396,10 @@
                             if (pollingConfig && pollingConfig.messages < response.message.length) {
                                 var numberOfNew = response.message.length - pollingConfig.messages;
                                 pollingConfig.messages += numberOfNew;
-                                pollingConfig.callback(response.message.slice(response.message.length - numberOfNew));
+                                var msgs = response.message.sort(function (a, b) {
+                                    return a.timestamp > b.timestamp ? 1 : a.timestamp < b.timestamp ? -1 : 0;
+                                });
+                                pollingConfig.callback(response.message[0].conversationId, msgs.slice(response.message.length - numberOfNew));
                             }
                         }
                     });
